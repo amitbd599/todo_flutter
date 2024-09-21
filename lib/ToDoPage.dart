@@ -10,12 +10,31 @@ class TodoPage extends StatefulWidget {
 }
 
 class ToDoPageView extends State<TodoPage> {
-  List Todolist = [
-    {"a": "ee"},
-    {"a": "ee"},
-    {"a": "ee"},
-    {"a": "ee"},
-  ];
+  List toDoList = [];
+
+  String item = "";
+
+  myInputOnChange(value) {
+    setState(() {
+      item = value;
+    });
+  }
+
+  addItem() {
+    setState(() {
+      toDoList.add({"item": item});
+      item = "";
+    });
+  }
+
+  removeItem(index) {
+    setState(() {
+      toDoList.removeAt(index);
+    });
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,17 +42,25 @@ class ToDoPageView extends State<TodoPage> {
         title: Text("App Bar"),
       ),
       body: Container(
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         child: Column(
           children: [
             Expanded(
               flex: 10,
               child: Row(
                 children: [
-                  Expanded(child: TextFormField()),
+                  Expanded(
+                      child: TextFormField(
+                    onChanged: (value) {
+                      myInputOnChange(value);
+                    },
+                    initialValue: item,
+                  )),
                   Expanded(
                       child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      addItem();
+                    },
                     child: Text("Add File"),
                   ))
                 ],
@@ -42,10 +69,28 @@ class ToDoPageView extends State<TodoPage> {
             Expanded(
               flex: 90,
               child: ListView.builder(
-                  itemCount: Todolist.length,
+                  itemCount: toDoList.length,
                   itemBuilder: (context, index) {
-                    return Card(
-                      child: Text("10"),
+                    return Row(
+                      children: [
+                        Expanded(
+                          flex: 80,
+                          child: Card(
+                            child: Text(toDoList[index]['item'].toString()),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 20,
+                          child: Card(
+                            child: TextButton(
+                              onPressed: () {
+                                removeItem(index);
+                              },
+                              child: Icon(Icons.delete),
+                            ),
+                          ),
+                        ),
+                      ],
                     );
                   }),
             ),
